@@ -1,0 +1,280 @@
+<form>
+  <label>Overview</label>
+  <row>
+    <panel>
+      <title>Status</title>
+      <single>
+        <title>Alarms</title>
+        <search>
+          <query>| prtglivedata content="status" | fields Alarms</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x65a637","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[0,3,5]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <option name="linkView">search</option>
+      </single>
+      <single>
+        <title>Aknowledged Alarms</title>
+        <search>
+          <query>| prtglivedata content=status | fields AckAlarms</query>
+          <earliest>0</earliest>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <option name="linkView">search</option>
+        <option name="rangeColors">["0x65a637","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[2,4,8]</option>
+      </single>
+      <single>
+        <title>New Alarms</title>
+        <search>
+          <query>| prtglivedata content=status | fields NewAlarms</query>
+          <earliest>0</earliest>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x65a637","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[0,1,2]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <option name="linkView">search</option>
+      </single>
+      <single>
+        <title>Autodiscovery Tasks</title>
+        <search>
+          <query>| prtglivedata content=status | fields AutoDiscoTasks</query>
+          <earliest>0</earliest>
+        </search>
+        <option name="colorBy">value</option>
+        <option name="colorMode">block</option>
+        <option name="drilldown">none</option>
+        <option name="numberPrecision">0</option>
+        <option name="rangeColors">["0x65a637","0xf7bc38","0xf58f39","0xd93f3c"]</option>
+        <option name="rangeValues">[0,2,5]</option>
+        <option name="showSparkline">1</option>
+        <option name="showTrendIndicator">1</option>
+        <option name="trendColorInterpretation">standard</option>
+        <option name="trendDisplayMode">absolute</option>
+        <option name="unitPosition">after</option>
+        <option name="useColors">1</option>
+        <option name="useThousandSeparators">1</option>
+        <option name="linkView">search</option>
+      </single>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Overview Sensors DOWN - click for details below</title>
+      <table>
+        <search>
+          <query>| prtglivedata content="sensors" filter_status=5 count=100 | table _time,device,group,message,sensor,status,objid</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <!-- Set the type of of drilldown, since we will always consume the same field, use row-->
+        <option name="drilldown">row</option>
+        <drilldown>
+          <!-- Use set to specify the new token to be created.
+                     Use any token from the page or from the click event to produce the value needed. -->
+          <set token="ID">$row.objid$</set>
+          <!-- If we also set the form.sourcetype the input will get updated too -->
+          <set token="form.ID">$row.objid$</set>
+        </drilldown>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Inventory</title>
+      <input type="dropdown" token="status" searchWhenChanged="true">
+        <label>Status</label>
+        <choice value="Warning">Warning</choice>
+        <choice value="Up">Up</choice>
+        <choice value="Down">Down</choice>
+        <choice value="Notification Info">Notification Info</choice>
+        <choice value="*">All</choice>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <input type="dropdown" token="type" searchWhenChanged="true">
+        <label>Type</label>
+        <choice value="*">All</choice>
+        <choice value="Device">Device</choice>
+        <choice value="Group">Group</choice>
+        <search>
+          <query>| prtglivedata content="sensortypes"</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <fieldForLabel>sensortype_description</fieldForLabel>
+        <fieldForValue>sensortype_description</fieldForValue>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <input type="dropdown" token="group" searchWhenChanged="true">
+        <label>Group</label>
+        <choice value="*">All</choice>
+        <search>
+          <query>| prtglivedata content="groups" | dedup group</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <fieldForLabel>name</fieldForLabel>
+        <fieldForValue>group</fieldForValue>
+        <default>*</default>
+        <initialValue>*</initialValue>
+      </input>
+      <table>
+        <title>List (click selected probe to display more detail below)</title>
+        <search>
+          <query>| rest /services/search/jobs count=1 | addinfo | prtgws api=table columns="objid,type,group,device,sensor,status,message,lastvalue,priority,favorite" | table ID,Type,Group,Device,Sensor,Status,Message(RAW) | search Status="$status$" AND Type="$type$" AND Group="$group$"</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="count">10</option>
+        <!-- Set the type of of drilldown, since we will always consume the same field, use row-->
+        <option name="drilldown">row</option>
+        <drilldown>
+          <!-- Use set to specify the new token to be created.
+                     Use any token from the page or from the click event to produce the value needed. -->
+          <set token="ID">$row.ID$</set>
+          <!-- If we also set the form.sourcetype the input will get updated too -->
+          <set token="form.ID">$row.ID$</set>
+        </drilldown>
+        <fields>["Type","Group","Device","Sensor","Status","Message(RAW)"]</fields>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <!--  depends="$ID$" -->
+        <title>Sensordetails</title>
+        <search>
+          <query>| prtglivedata content=sensordetails id=$ID$  | fields - _raw,_time,source,sourcetype ,host |transpose | rename column AS Key | rename "row 1" AS Value</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+    <panel>
+      <table>
+        <!--  depends="$ID$" -->
+        <title>Latest measurement of Sensor (click desired measure to chart)</title>
+        <search>
+          <query>| prtghistoricdata id=$ID$ count=1 | fields - _raw,_time,*(RAW),source,sourcetype,host |  transpose | rename column AS Key | rename "row 1" AS Value</query>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">row</option>
+        <option name="count">10</option>
+        <!-- Set the type of of drilldown, since we will always consume the same field, use row-->
+        <option name="drilldown">row</option>
+        <drilldown>
+          <!-- Use set to specify the new token to be created.
+                     Use any token from the page or from the click event to produce the value needed. -->
+          <set token="Key">$row.Key$</set>
+          <!-- If we also set the form.sourcetype the input will get updated too -->
+          <set token="form.Key">$row.Key$</set>
+        </drilldown>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <input type="time" token="timerange" searchWhenChanged="true">
+        <label></label>
+        <default>
+          <earliest>-60m@m</earliest>
+          <latest>now</latest>
+        </default>
+      </input>
+      <input type="dropdown" token="function">
+        <choice value="avg">avg</choice>
+        <choice value="max">max</choice>
+        <choice value="min">min</choice>
+        <default>max</default>
+        <initialValue>max</initialValue>
+      </input>
+      <chart>
+        <title>Timechart</title>
+        <search>
+          <query>| prtghistoricdata id=$ID$  | timechart $function$("$Key$(RAW)")</query>
+          <earliest>$timerange.earliest$</earliest>
+          <latest>$timerange.latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="count">10</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">area</option>
+        <option name="charting.chart.bubbleMaximumSize">50</option>
+        <option name="charting.chart.bubbleMinimumSize">10</option>
+        <option name="charting.chart.bubbleSizeBy">area</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.showDataLabels">none</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.layout.splitSeries.allowIndependentYRanges">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+</form>
