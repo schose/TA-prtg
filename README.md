@@ -1,5 +1,7 @@
 # TA-prtg
 
+this is a fork of https://github.com/dominiquevocat/TA-prtg rewritten to python3
+
 Custom commands to use the PRTG Webapi from Splunk. Includes a dashboard with an overview of your PRTG Data illustrating the usage and/or directly useful to you i guess.
 
 Config is in prtg.conf in \local only!
