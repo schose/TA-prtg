@@ -19,10 +19,10 @@ query_id_key = "info_search_time"
 search_name_key = "search_name"
 infinity = 10E200
 
-import sys, os
-sys.path.append(os.path.join(os.environ['SPLUNK_HOME'],'etc','apps','SA-VSCode','bin'))
-import splunk_debug as dbg
-dbg.enable_debugging(timeout=25)
+# import sys, os
+# sys.path.append(os.path.join(os.environ['SPLUNK_HOME'],'etc','apps','SA-VSCode','bin'))
+# import splunk_debug as dbg
+# dbg.enable_debugging(timeout=25)
 
 # (isgetinfo, sys.argv) = client.isGetInfo(sys.argv)
 
@@ -134,7 +134,13 @@ try:
     SERVER = parser.get(section_name, 'server')
     PROTOCOL = parser.get(section_name, 'protocol')
     USERNAME = parser.get(section_name, 'user')
-    PASSWORD = parser.get(section_name, 'password')
+
+    PWMODE = parser.get(section_name, 'pwmode')
+
+    if PWMODE == "password":
+        PASSWORD = parser.get(section_name, 'password')
+    elif PWMODE == "passhash":
+        PASSWORD = parser.get(section_name, 'password')
 
 except Exception as e:
     stack = traceback.format_exc()
@@ -156,7 +162,7 @@ try:
         #url="https://"+SERVER+"/wapi/v1.2.1/"+api
         url = f"{PROTOCOL}://{SERVER}/api/table.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'output' : 'csvtable',
                     'count' : count,
                     'columns' : columns,
@@ -172,7 +178,7 @@ try:
             columns="objid,datetime,parent,type,name,status,message"
         url = f"{PROTOCOL}://{SERVER}/api/table.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'output' : 'csvtable',
                     'count' : count,
@@ -186,7 +192,7 @@ try:
             columns="dateonly,timeonly,user,message"
         url = f"{PROTOCOL}://{SERVER}/api/table.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'output' : 'csvtable',
                     'count' : count,
@@ -198,7 +204,7 @@ try:
         #url="https://"+SERVER+"/wapi/v1.2.1/"+api
         url = f"{PROTOCOL}://{SERVER}/api/table.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'count' : count,
                     'output' : 'xml',
@@ -212,7 +218,7 @@ try:
             columns="objid,group,device,sensor,status,priority,favorite"
         url = f"{PROTOCOL}://{SERVER}/api/table.csv"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'output' : 'csvtable',
                     'count' : count,
@@ -224,9 +230,9 @@ try:
         #url="https://"+SERVER+"/wapi/v1.2.1/"+api
         if columns == '':
             columns="objid,group,device,sensor,status,priority,favorite"
-        url = f"{PROTOCOL}://{SERVER}/api/table.xml"
+        url = f"{PROTOCOL}://{SERVER}/api/table.csv"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'output' : 'csvtable',
                     'count' : count,
@@ -238,9 +244,9 @@ try:
         #url="https://"+SERVER+"/wapi/v1.2.1/"+api
         if columns == '':
             columns="objid,group,device,sensor,status,priority,favorite"
-        url = f"{PROTOCOL}://{SERVER}/api/table.xml"
+        url = f"{PROTOCOL}://{SERVER}/api/table.csv"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : 'sensors',
                     'count' : count,
                     'output' : 'csvtable',
@@ -257,7 +263,7 @@ try:
             columns= "name,tags,status,message,priority,datetime,tickettype,modifiedby"
         url = f"{PROTOCOL}://{SERVER}/api/table.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'output' : 'csvtable',
                     'count' : count,
@@ -271,7 +277,7 @@ try:
             columns= "objid,probe,group,name,downsens,partialdownsens,downacksens,upsens,warnsens,pausedsens,unusualsens,undefinedsens"
         url = f"{PROTOCOL}://{SERVER}/api/table.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'content' : api,
                     'output' : 'csvtable',
                     'count' : count,
@@ -280,9 +286,9 @@ try:
         data = urllib.parse.urlencode(values)
 
     if api == "historicdata":
-        url = f"{PROTOCOL}://{SERVER}/api/table.xml"
+        url = f"{PROTOCOL}://{SERVER}/api/historicdata.csv"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'id': id,
                     'sdate' : sdate,
                     'edate' : edate,
@@ -290,21 +296,21 @@ try:
         data = urllib.parse.urlencode(values)
 
     if api == "sensordetails":
-        url = f"{PROTOCOL}://{SERVER}/api/table.xml"
+        url = f"{PROTOCOL}://{SERVER}/api/getsensordetails.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'id': id}
         data = urllib.parse.urlencode(values)
 
     if api == "status":
-        url = f"{PROTOCOL}://{SERVER}/api/table.xml"
+        url = f"{PROTOCOL}://{SERVER}/api/getstatus.xml"
         values={ 'username' : USERNAME,
-                    'password' : PASSWORD,
+                    PWMODE : PASSWORD,
                     'id': '0'}
         data = urllib.parse.urlencode(values)
 
     if api == "sensortypes":
-        url = f"{PROTOCOL}://{SERVER}/api/table.xml"
+        url = f"{PROTOCOL}://{SERVER}/api/sensortypesinuse.json"
         values={ 'username' : USERNAME,
                     'password' : PASSWORD}
         data = urllib.parse.urlencode(values)
