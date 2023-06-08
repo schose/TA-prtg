@@ -18,11 +18,11 @@ class prtgHistoricData(GeneratingCommand):
     section_name = Option(require=False, default='default')
 
     def generate(self):
-        # Put your event  code here
-        import sys, os
-        sys.path.append(os.path.join(os.environ['SPLUNK_HOME'],'etc','apps','SA-VSCode','bin'))
-        import splunk_debug as dbg
-        dbg.enable_debugging(timeout=25)
+        # # # Put your event  code here
+        # import sys, os
+        # sys.path.append(os.path.join(os.environ['SPLUNK_HOME'],'etc','apps','SA-VSCode','bin'))
+        # import splunk_debug as dbg
+        # dbg.enable_debugging(timeout=25)
 
         scriptDir = sys.path[0]
         configLocalFileName = os.path.join(scriptDir,'..','local','prtg.conf')
@@ -65,12 +65,19 @@ class prtgHistoricData(GeneratingCommand):
         from itertools import chain
         for row in mydictreader:
             # remove some fields, formate a proper _time by calculating epoch using this formula(row[Date Time (RAW)] - 25569)* 86400)
-            testtime = row["Date Time(RAW)"] - 25569)* 86400
+            if row["Date Time(RAW)"] == "":
+                testtime = 0
+            else:
+                testtime = float(row["Date Time(RAW)"])
+
+            testtime = testtime - 25569
+            testtime = testtime * 86400
+            
             extrafields = {'_raw':row
                             ,'sourcetype':'prtg:historicdata'
-                            ,'host':SERVER
-                            ,'source':url
-                            ,'_time':(float(row["Date Time(RAW)"]) - 25569)* 86400 }
+                            ,'host': SERVER
+                            ,'source': url
+                            ,'_time': str(testtime)  }
             #clean up
             row.pop("Date Time(RAW)", None)
             row.pop("Date Time", None)
